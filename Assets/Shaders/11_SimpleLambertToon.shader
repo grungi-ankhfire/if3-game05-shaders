@@ -1,4 +1,4 @@
-﻿Shader "Interface3/10_SimpleLambert"
+﻿Shader "Interface3/11_SimpleLambertToon"
 {
     Properties
     {
@@ -6,6 +6,7 @@
         _MainTex ("Albedo (RGB)", 2D) = "white" {}
         _Glossiness ("Smoothness", Range(0,1)) = 0.5
         _Metallic ("Metallic", Range(0,1)) = 0.0
+		[NoScaleOffset] _ToonRamp("Toon Ramp", 2D) = "white" {}
     }
     SubShader
     {
@@ -20,6 +21,7 @@
         #pragma target 3.0
 
         sampler2D _MainTex;
+		sampler2D _ToonRamp;
 
         struct Input
         {
@@ -40,6 +42,7 @@
 
 		half4 LightingSimpleLambert(SurfaceOutput s, half3 lightDir, half atten) {
 			half NdotL = saturate(dot(s.Normal, lightDir));
+			NdotL = tex2D(_ToonRamp, fixed2(NdotL, 0.5));
 			half4 c;
 			c.rgb = s.Albedo * _LightColor0.rgb * NdotL * atten;
 			c.a = s.Alpha;
