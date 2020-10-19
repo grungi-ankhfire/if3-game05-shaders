@@ -45,13 +45,23 @@
             // put more per-instance properties here
         UNITY_INSTANCING_BUFFER_END(Props)
 
+		float compute_mask(float2 uv) {
+			float res = tex2D(_MaskTex, uv);
+			res = step(_Cutoff, res);
+			return res;			
+		}
+
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
-			float m = tex2D(_MaskTex, IN.uv_MaskTex);
+			float m = compute_mask(IN.uv_MaskTex);
+			float m_right = compute_mask(IN.uv_MaskTex + half2(0.001, 0));
+			float m_up = compute_mask(IN.uv_MaskTex + half2(0, 0.001));
+            
+			half3 vec1 = normalize(half3(2, 0, m_right - m));
+			half3 vec2 = normalize(half3(0, 2, m_up - m));
+			o.Normal = cross(vec1, vec2);			
 
-			m = step(_Cutoff, m);
-
-            // Albedo comes from a texture tinted by color
+			// Albedo comes from a texture tinted by color
             fixed4 c = m * tex2D (_MainTex, IN.uv_MainTex) + (1-m) * tex2D (_SecondaryTex, IN.uv_SecondaryTex);
 			c *= _Color;
             o.Albedo = c.rgb;
@@ -59,6 +69,7 @@
             o.Metallic = _Metallic;
             o.Smoothness = _Glossiness;
             o.Alpha = c.a;
+			//o.Normal...
         }
         ENDCG
     }
