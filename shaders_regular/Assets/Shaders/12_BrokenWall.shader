@@ -47,7 +47,7 @@
 
 		float compute_mask(float2 uv) {
 			float res = tex2D(_MaskTex, uv);
-			res = step(_Cutoff, res);
+			//res = step(_Cutoff, res);
 			return res;			
 		}
 
@@ -57,8 +57,8 @@
 			float m_right = compute_mask(IN.uv_MaskTex + half2(0.001, 0));
 			float m_up = compute_mask(IN.uv_MaskTex + half2(0, 0.001));
             
-			half3 vec1 = normalize(half3(2, 0, m_right - m));
-			half3 vec2 = normalize(half3(0, 2, m_up - m));
+			half3 vec1 = normalize(half3(0.1, 0, m_right - m));
+			half3 vec2 = normalize(half3(0, 0.1, m_up - m));
 			o.Normal = cross(vec1, vec2);			
 
 			// Albedo comes from a texture tinted by color
