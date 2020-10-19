@@ -31,9 +31,9 @@
 		};
 
 		void surf(Input IN, inout SurfaceOutput o) {
-			float PI = 3.1415926;
-			//float m = 1 - tex2D(_Mask, IN.uv_Mask).r;
-			float m = 0.5 * (1 + sin(IN.uv_MainTex.y * 2 * PI * 3 + _Time.w));
+			//float PI = 3.1415926;
+			float m = tex2D(_Mask, IN.uv_Mask).r;
+			//float m = 0.5 * (1 + sin(IN.uv_MainTex.y * 2 * PI * 3 + _Time.w));
 
 			// m * col1 + (1-m) * col2
 			o.Albedo = m * tex2D(_MainTex, IN.uv_MainTex).rgb + (1-m) * tex2D(_SecondTex, IN.uv_SecondTex).rgb;
